@@ -1,8 +1,8 @@
 import React, { Component } from "react";
-import Path from "../components/Path.js";
-import TabMenu from "../components/TabMenu.js";
+import PathDevices from "../components/PathDevices.js";
+import TabMenuDevices from "../components/TabMenuDevices.js";
 
-class NetworkPage extends Component {
+class DevicesPage extends Component {
   constructor(props){
     super(props);
     this.state = {
@@ -17,12 +17,18 @@ class NetworkPage extends Component {
   }
 
   render() {
+    let param = this.props.match.params.deviceHolder;
+    const {history} = this.props;
     return (
       <div className="col-lg-12 col-md-12 col-sm-12">
         <div className="row" id="tool">
-          <Path setNeedRefreshTabMenuState={this.setNeedRefreshTabMenuState} />
+          <PathDevices 
+          history={history}
+          param={param} 
+          setNeedRefreshTabMenuState={this.setNeedRefreshTabMenuState} />
         </div>
-        <TabMenu
+        <TabMenuDevices
+        param={param}
         needRefreshTabMenu={this.state.needRefreshTabMenu}
         setNeedRefreshTabMenuState={this.setNeedRefreshTabMenuState}/>
       </div>
@@ -30,4 +36,4 @@ class NetworkPage extends Component {
   }
 }
 
-export default NetworkPage;
+export default DevicesPage;

@@ -11,55 +11,36 @@ import callApi from "../util/ApiCaller";
 import { notification } from "antd";
 import "antd/dist/antd.css";
 
-class HardwareTypeDialog extends React.Component {
+class DialogEdit extends Component {
   constructor(props) {
     super(props);
     this.state = {
       deviceInfo: {},
-      deviceHolderList: [],
     };
   }
 
   componentDidMount() {
     this.setState({ deviceInfo: this.props.deviceInfo });
-    callApi("device-holder", "GET", null)
-      .then((res) => {
-        if (res.status === 200) {
-          this.setState({
-            deviceHolderList: res.data,
-          });
-        }
-      })
-      .catch((error) => {
-        notification.error({
-          message: "Error ",
-          description: error.message,
-        });
-      });
-      
   }
 
   changeName = () => {
     let result = "";
     const { columnName } = this.props;
     switch (columnName) {
-      case "deviceHolderName":
-        result = "device holder";
-        break;
       case "hardwareType":
-          result = "hardware type";
-          break;
+        result = "hardware type";
+        break;
       case "interfaceVersion":
-          result = "interface version";
-            break;
-      case "deviceState":
-          result = "device state";
-          break;
+        result = "interface version";
+        break;
+      case "connectionMechanism":
+        result = "connection mechanism";
+        break;
       default:
         break;
     }
     return result;
-  }
+  };
 
   componentDidUpdate(prevProps, prevState) {
     if (
@@ -73,35 +54,36 @@ class HardwareTypeDialog extends React.Component {
   label = {
     hardwareType: "Hardware type",
     interfaceVersion: "Interface version",
-    deviceState: "Device state",
+    connectionMechanism: "Connection mechanism",
   };
 
   renderField = () => {
     const { columnName } = this.props;
+    const connectionMechanismList = [
+      { value: "Call home" },
+      { value: "Non Callhome" },
+    ];
     let result = <> </>;
     if (!columnName) {
       return result;
     }
     switch (columnName) {
-      case "deviceHolderName":
+      case "connectionMechanism":
         result = (
           <>
             <TextField
-              id="deviceHolderName"
+              id="connectionMechanism"
               select
-              label="Device holder"
-              name="deviceHolderName"
+              label="Connection mechanism"
+              name="connectionMechanism"
               value={this.state.deviceInfo[columnName]}
               onChange={this.onChangeDiviceInfo}
               required
               fullWidth
             >
-              {this.state.deviceHolderList.map((option) => (
-                <MenuItem
-                  key={option.deviceHolderName}
-                  value={option.deviceHolderName}
-                >
-                  {option.deviceHolderName}
+              {connectionMechanismList.map((option) => (
+                <MenuItem key={option.value} value={option.value}>
+                  {option.value}
                 </MenuItem>
               ))}
             </TextField>
@@ -129,21 +111,23 @@ class HardwareTypeDialog extends React.Component {
 
   handleSubmit = (e) => {
     e.preventDefault();
+    this.props.onCloseDialog();
     const {
       name,
       hardwareType,
       interfaceVersion,
-      deviceState,
-      deviceHolderName,
+      connectionMechanism,
+      deviceHolderName
     } = this.state.deviceInfo;
     const deviceInfo = {
       name,
       hardwareType,
       interfaceVersion,
-      deviceState,
-      deviceHolderName,
+      connectionMechanism,
+      deviceHolderName
     };
-    if (this.validateInput(deviceInfo)) { 
+    console.log("connectionMechanism: ", deviceInfo)
+    if (this.validateInput(deviceInfo)) {
       notification.error({
         message: "Error ",
         description: "Can not edit device",
@@ -178,10 +162,7 @@ class HardwareTypeDialog extends React.Component {
     if (device.interfaceVersion === "") {
       valid = true;
     }
-    if (device.deviceState === "") {
-      valid = true;
-    }
-    if (device.deviceHolderName === "") {
+    if (device.connectionMechanism === "") {
       valid = true;
     }
     return valid;
@@ -211,13 +192,12 @@ class HardwareTypeDialog extends React.Component {
           <DialogTitle id="form-dialog-title">Edit {name}</DialogTitle>
           <DialogContent>
             <form onSubmit={this.handleSubmit} noValidate autoComplete="off">
-            {renderField}
+              {renderField}
               <DialogActions>
                 <Button onClick={this.props.onCloseDialog} color="primary">
                   Cancel
                 </Button>
                 <Button
-                  onClick={this.props.onCloseDialog}
                   variant="contained"
                   type="submit"
                   color="primary"
@@ -233,4 +213,4 @@ class HardwareTypeDialog extends React.Component {
   }
 }
 
-export default HardwareTypeDialog;
+export default DialogEdit;

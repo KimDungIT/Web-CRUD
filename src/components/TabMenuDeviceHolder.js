@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import AppBar from "@material-ui/core/AppBar";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
-import DeviceDetail from "./DeviceDetail.js";
+import DeviceHolderList from "./DeviceHolderList.js";
 import callApi from "../util/ApiCaller.js";
 import { notification } from "antd";
 import "antd/dist/antd.css";
@@ -24,23 +24,23 @@ const TabPanel = (props) => {
   );
 };
 
-class TabMenuDeviceDetail extends Component {
+class TabMenuDeviceHolder extends Component {
   constructor(props) {
     super(props);
     this.state = {
       value: 0,
-      deviceInfo: "",
+      deviceHolderList: [],
     };
   }
 
-  getDevice = () => {
-    let {name} = this.props;
-    callApi(`device?name=${name}`, "GET", null)
+  getDiviceHolderList = () => {
+    callApi("device-holder", "GET", null)
       .then((res) => {
         if (res.status === 200) {
+          console.log("ddddd: ", res.data);
           this.setState({
-            deviceInfo: res.data,
-          })
+            deviceHolderList: res.data,
+          });
         }
       })
       .catch((error) => {
@@ -49,15 +49,17 @@ class TabMenuDeviceDetail extends Component {
           description: error.message,
         });
       });
-  }
+  };
+
   componentDidMount() {
-    this.getDevice();
+    //send request get all device holder
+    this.getDiviceHolderList();
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (this.props.needRefreshDevice) {
-      this.getDevice();
-      this.props.setNeedRefreshDevice(false);
+    if (this.props.needRefreshDeviceHolder) {
+      this.getDiviceHolderList();
+      this.props.setNeedRefreshDeviceHolderState(false);
     }
   }
 
@@ -66,35 +68,45 @@ class TabMenuDeviceDetail extends Component {
   };
 
   render() {
-    let { deviceInfo } = this.state;
+    let { deviceHolderList } = this.state;
+    console.log("device holder list: ", deviceHolderList);
     return (
       <div className="row">
         <AppBar position="static" elevation={0}>
           <Tabs
             value={this.state.value}
             onChange={this.handleChange}
-            // TabIndicatorProps={{ style: { background: "#28b8ed" } }}
-            className="tabHeader"
+            aria-label="tabs menu"
+            // TabIndicatorProps={{ style: { background: "#00C9FF"}}}
             indicatorColor="primary"
             textColor="primary"
+            className="tabHeader"
           >
-            <Tab  className="tabTitle" label="DEVICE" {...a11yProps(0, false)} />
-            <Tab  className="tabTitle" label="EXTENSIONS" {...a11yProps(1, false)} />
-            <Tab  className="tabTitle" label="LOGGING" {...a11yProps(2, false)} />
+            <Tab
+              className="tabTitle"
+              label="DEVICE HOLDERS"
+              {...a11yProps(0, false)}
+            />
+            <Tab
+              className="tabTitle"
+              label="EXTENSIONS"
+              {...a11yProps(1, false)}
+            />
+            <Tab
+              className="tabTitle"
+              label="LOGGING"
+              {...a11yProps(2, false)}
+            />
           </Tabs>
         </AppBar>
         <TabPanel value={this.state.value} index={0}>
-          <DeviceDetail
-            deviceInfo={deviceInfo}
-            setNeedRefreshDevice={this.props.setNeedRefreshDevice}
-          />
+          <DeviceHolderList deviceHolderList={deviceHolderList} />
         </TabPanel>
         <TabPanel value={this.state.value} index={1}></TabPanel>
-        <TabPanel value={this.state.value} index={2}>
-        </TabPanel>
+        <TabPanel value={this.state.value} index={2}></TabPanel>
       </div>
     );
   }
 }
 
-export default TabMenuDeviceDetail;
+export default TabMenuDeviceHolder;

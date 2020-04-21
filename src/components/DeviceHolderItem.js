@@ -4,29 +4,32 @@ import CardContent from "@material-ui/core/CardContent";
 import Typography from "@material-ui/core/Typography";
 import { Link } from "react-router-dom";
 import CardMedia from "@material-ui/core/CardMedia";
-import cloud from "./../images/clound_icon.png";
+import connection from "./../images/connection.png";
 import Tooltip from "@material-ui/core/Tooltip";
 
-class DeviceItem extends Component {
+class DeviceHolderItem extends Component {
   render() {
-    const { deviceItem } = this.props;
-    const result = deviceItem.hardwareType + " " + deviceItem.interfaceVersion;
+    const { deviceHolderItem } = this.props;
     return (
       <div>
-        {deviceItem && (
-          <Link to={`/${deviceItem.deviceHolderName}/devices/${deviceItem.name}`}>
+        {deviceHolderItem && (
+          <Link to={`/${deviceHolderItem.deviceHolderName}/devices`}>
             <Card variant="outlined" className="cardRoot">
-              <CardMedia className="cardCover" image={cloud} title="cloud" />
+              <CardMedia
+                className="cardCover"
+                image={connection}
+                title="device holders"
+              />
               <div className="cardDetail">
                 <CardContent className="cardText">
-                  <Tooltip title={deviceItem.name}>
+                  <Tooltip title={deviceHolderItem.deviceHolderName}>
                     <Typography variant="h6" gutterBottom>
-                      {deviceItem.name}
+                      {deviceHolderItem.deviceHolderName}
                     </Typography>
                   </Tooltip>
-                  <Tooltip title={result}>
+                  <Tooltip title= {`${deviceHolderItem.noOfDevices} devices`}>
                     <Typography variant="body2" gutterBottom>
-                      {deviceItem.hardwareType} {deviceItem.interfaceVersion}
+                      {deviceHolderItem.noOfDevices} devices
                     </Typography>
                   </Tooltip>
                 </CardContent>
@@ -39,4 +42,4 @@ class DeviceItem extends Component {
   }
 }
 
-export default DeviceItem;
+export default DeviceHolderItem;

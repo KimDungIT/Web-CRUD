@@ -17,19 +17,21 @@ class DeviceDetailPage extends Component {
   };
 
   render() {
-    let param = this.props.match.params.name;
-    let {history} = this.props;
+    let {deviceHolder, name} = this.props.match.params;
+    const {history} = this.props;
     return (
       <div className="col-lg-12 col-md-12 col-sm-12">
         <div className="row" id="tool">
           <PathDeviceDetail
             history={history}
-            param={param}
+            name={name}
+            deviceHolder={deviceHolder}
             setNeedRefreshDevice={this.setNeedRefreshDevice}
           />
         </div>
         <TabMenuDeviceDetail
-          param={param}
+          name={name}
+          deviceHolder={deviceHolder}
           needRefreshDevice={this.state.needRefreshDevice}
           setNeedRefreshDevice={this.setNeedRefreshDevice}
         />

@@ -6,45 +6,30 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import ReplayIcon from "@material-ui/icons/Replay";
 import IconButtonCommon from "./common/button/IconButton";
 import "../common.css";
-// import EditIcon from "@material-ui/icons/Edit";
-import callApi from "../util/ApiCaller.js";
-import { notification } from "antd";
 import "antd/dist/antd.css";
 import { Link } from "react-router-dom";
 import Tooltip from "@material-ui/core/Tooltip";
+import DialogDelete from "./DialogDelete.js";
 
 class PathDeviceDetail extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      Path: [],
       open: false,
+      openDelete: false,
     };
   }
 
   onClickDeleteButton = () => {
-    let { history } = this.props;
-    callApi(`device/${this.props.param}`, "DELETE", null)
-      .then((res) => {
-        if (res.status === 200) {
-          notification.success({
-            message: "Success",
-            description: "Delete device successfully!",
-          });
-          this.props.setNeedRefreshDevice(true);
-          history.push("/");
-        }
-      })
-      .catch((error) => {
-        notification.error({
-          message: "Error ",
-          description: error.message,
-        });
-      });
+    this.setState({ openDelete: true });
   };
 
   onClickReloadButton = () => {
     this.props.setNeedRefreshDevice(true);
+  };
+
+  handleCloseDelete = () => {
+    this.setState({ openDelete: false });
   };
 
   pathIconButton = () => [
@@ -56,14 +41,14 @@ class PathDeviceDetail extends Component {
           icon: <DeleteIcon />,
           disable: false,
           onClick: this.onClickDeleteButton,
-          title: "Delete device"
+          title: "Delete device",
         },
         {
           id: 2,
           icon: <ReplayIcon />,
           disable: false,
           onClick: this.onClickReloadButton,
-          title: "Refresh"
+          title: "Refresh",
         },
       ],
     },
@@ -71,14 +56,21 @@ class PathDeviceDetail extends Component {
 
   pathList = [
     {
-      name: "Devices",
+      name: "Device holders",
       color: "inherit",
       to: "/",
       onClick: this.handleClick,
       className: "link",
     },
     {
-      name: this.props.param,
+      name: this.props.deviceHolder,
+      color: "inherit",
+      to: `/${this.props.deviceHolder}/devices`,
+      onClick: this.handleClick,
+      className: "link",
+    },
+    {
+      name: this.props.name,
       color: "textPrimary",
       className: "link",
     },
@@ -137,12 +129,21 @@ class PathDeviceDetail extends Component {
                 )
               )}
             </Breadcrumbs>
-            <h3 id="currentName">{this.props.param}</h3>
+            <h3 id="currentName">{this.props.name}</h3>
           </div>
           <div className="col-lg-4 col-md-4 col-sm-4 content-flex-end">
             {iconButtonList}
           </div>
         </div>
+        <DialogDelete
+          title="device"
+          history={this.props.history}
+          name={this.props.name}
+          deviceHolder={this.props.deviceHolder}
+          openDialog={this.state.openDelete}
+          handleCloseDelete={this.handleCloseDelete}
+          setNeedRefreshDevice={this.props.setNeedRefreshDevice}
+        />
       </div>
     );
   }

@@ -1,7 +1,8 @@
 import React, { Component } from "react";
 import Header from "./components/Header.js";
-import NetworkPage from "./pages/NetworkPage.js";
+import DevicesPage from "./pages/DevicesPage.js";
 import DeviceDetailPage from "./pages/DeviceDetailPage.js";
+import DeviceHolderPage from "./pages/DeviceHolderPage.js";
 import NotFoundPage from "./pages/NotFoundPage.js";
 import { notification } from "antd"
 import {
@@ -23,8 +24,9 @@ class App extends Component {
           <Header />
           <div className="row">
             <Switch>
-              <Route path="/" exact component={NetworkPage}></Route>
-              <Route path="/:name" component={DeviceDetailPage}></Route>
+              <Route path="/" exact component={DeviceHolderPage}></Route>
+              <Route path="/:deviceHolder/devices" exact component={DevicesPage}></Route>
+              <Route path="/:deviceHolder/devices/:name" exact component={DeviceDetailPage}></Route>
               <Route component={NotFoundPage}></Route>
             </Switch>
           </div>

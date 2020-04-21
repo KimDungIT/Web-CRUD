@@ -8,37 +8,21 @@ import ReplayIcon from "@material-ui/icons/Replay";
 import IconButtonCommon from "./common/button/IconButton";
 import "../common.css";
 import DialogDevice from "./DialogDevice.js";
-import callApi from "../util/ApiCaller.js";
-import { notification } from "antd";
-import "antd/dist/antd.css";
+import DialogDelete from "./DialogDelete.js";
 import Tooltip from "@material-ui/core/Tooltip";
+import { Link } from "react-router-dom";
 
-class Path extends Component {
+class PathDevices extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      Path: [],
-      open: false,
+      openAdd: false,
+      openDelete: false,
     };
   }
 
   onClickDeleteButton = () => {
-    callApi("device", "DELETE", null)
-      .then((res) => {
-        if (res.status === 200) {
-          notification.success({
-            message: "Success",
-            description: "Delete all devices successfully!",
-          });
-          this.props.setNeedRefreshTabMenuState(true);
-        }
-      })
-      .catch((error) => {
-        notification.error({
-          message: "Error ",
-          description: error.message,
-        });
-      });
+    this.setState({ openDelete: true });
   };
 
   onClickReloadButton = () => {
@@ -47,11 +31,15 @@ class Path extends Component {
   };
 
   handleClickOpen = () => {
-    this.setState({ open: true });
+    this.setState({ openAdd: true });
   };
 
   handleClose = () => {
-    this.setState({ open: false });
+    this.setState({ openAdd: false });
+  };
+
+  handleCloseDelete = () => {
+    this.setState({ openDelete: false });
   };
 
   pathIconButton = [
@@ -83,12 +71,28 @@ class Path extends Component {
     },
   ];
 
+  pathList = [
+    {
+      name: "Device holders",
+      color: "inherit",
+      to: "/",
+      onClick: this.handleClick,
+      className: "link",
+    },
+    {
+      name: this.props.param,
+      color: "textPrimary",
+      className: "link",
+    },
+  ];
+
   handleClick = (event) => {
     event.preventDefault();
     console.info("You clicked a breadcrumb.");
   };
 
   render() {
+    const length = this.pathList.length;
     return (
       <div className="col-lg-12 col-md-12 col-sm-12">
         <div className="row">
@@ -97,13 +101,33 @@ class Path extends Component {
               separator={<NavigateNextIcon fontSize="small" />}
               aria-label="breadcrumb"
             >
-              <Tooltip title="Devices">
-                <Typography color="textPrimary" className="link">
-                  Devices
-                </Typography>
-              </Tooltip>
+               {this.pathList.map((element, index) =>
+                length === index + 1 ? (
+                  <Tooltip title={element.name}>
+                    <Typography
+                      key={index}
+                      color={element.color}
+                      className={element.className}
+                    >
+                      {element.name}
+                    </Typography>
+                  </Tooltip>
+                ) : (
+                  <Tooltip title={element.name}>
+                    <Link
+                      key={index}
+                      color={element.color}
+                      to={element.to}
+                      onClick={element.onClick}
+                      className={element.className}
+                    >
+                      {element.name}
+                    </Link>
+                  </Tooltip>
+                )
+              )}
             </Breadcrumbs>
-            <h3 id="currentName">Devices</h3>
+            <h3 id="currentName">{this.props.param}</h3>
           </div>
           <div className="col-lg-4 col-md-4 col-sm-4 content-flex-end">
             {this.pathIconButton[0].iconButtons.map((iconButton, index) => (
@@ -116,10 +140,22 @@ class Path extends Component {
               />
             ))}
             <DialogDevice
-              openDialog={this.state.open}
+              deviceHolder={this.props.param}
+              openDialog={this.state.openAdd}
               onCloseDialog={this.handleClose}
               setNeedRefreshTabMenuState={this.props.setNeedRefreshTabMenuState}
             />
+
+            <DialogDelete
+              title="devices list"
+              param={this.props.param}
+              history={this.props.history}
+              deviceHolder={this.props.param}
+              openDialog={this.state.openDelete}
+              handleCloseDelete={this.handleCloseDelete}
+              setNeedRefreshTabMenuState={this.props.setNeedRefreshTabMenuState}
+            />
+
           </div>
         </div>
       </div>
@@ -127,4 +163,4 @@ class Path extends Component {
   }
 }
 
-export default Path;
+export default PathDevices;

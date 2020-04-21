@@ -16,51 +16,36 @@ class DialogDevice extends Component {
     this.state = {
       open: false,
       deviceInfo: {},
-      deviceHolderList: [],
+      deviceHolderName: "",
     };
   }
 
   componentDidMount() {
-    callApi("device-holder", "GET", null)
-      .then((res) => {
-        if (res.status === 200) {
-          this.setState({
-            deviceHolderList: res.data,
-          });
-        }
-      })
-      .catch((error) => {
-        notification.error({
-          message: "Error ",
-          description: error.message,
-        });
-      });
+    this.setState({deviceHolderName: this.props.deviceHolder});
   }
-
-  
-
 
   handleSubmit = (e) => {
     e.preventDefault();
+    const {deviceHolderName} = this.state;
+    this.props.onCloseDialog();
     const {
       name,
       hardwareType,
       interfaceVersion,
-      deviceState,
-      deviceHolderName,
+      connectionMechanism,
     } = this.state.deviceInfo;
     const deviceInfo = {
       name,
       hardwareType,
       interfaceVersion,
-      deviceState,
+      connectionMechanism,
       deviceHolderName,
     };
     const checkInsert =
       name &&
       hardwareType &&
       interfaceVersion &&
-      deviceState &&
+      connectionMechanism &&
       deviceHolderName;
     if (!checkInsert) {
       notification.error({
@@ -81,8 +66,7 @@ class DialogDevice extends Component {
             name: "",
             hardwareType: "",
             interfaceVersion: "",
-            deviceState: "",
-            deviceHolderName: "",
+            connectionMechanism: "",
           });
         }
       })
@@ -94,19 +78,21 @@ class DialogDevice extends Component {
       });
   };
 
-  onChangeDiviceInfo = event => {
-    const {name, value} = event.target;
-    this.setState( prevState => ({
+  onChangeDiviceInfo = (event) => {
+    const { name, value } = event.target;
+    this.setState((prevState) => ({
       deviceInfo: {
         ...prevState.deviceInfo,
         [name]: value,
-      }
+      },
     }));
   };
 
   render() {
-    let { deviceHolderList } = this.state;
-    const hasDeviceHolderList = deviceHolderList && deviceHolderList.length > 0;
+    const connectionMechanismList = [
+      { value: "Call home" },
+      { value: "Non Callhome" },
+    ];
     return (
       <div>
         <Dialog
@@ -146,39 +132,39 @@ class DialogDevice extends Component {
                 onChange={this.onChangeDiviceInfo}
               />
               <TextField
+                id="connectionMechanism"
+                name="connectionMechanism"
                 margin="dense"
-                id="deviceState"
-                name="deviceState"
-                label="Device state"
-                fullWidth
-                required
+                select
+                label="Connection mechanism"
                 onChange={this.onChangeDiviceInfo}
-              />
-              {hasDeviceHolderList && (
+                required
+                fullWidth
+              >
+                {connectionMechanismList.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.value}
+                  </MenuItem>
+                ))}
+              </TextField>
                 <TextField
                   id="deviceHolder"
                   name="deviceHolderName"
                   margin="dense"
-                  select
                   label="Device holder"
-                  onChange={this.onChangeDiviceInfo}
+                  value={this.props.deviceHolder}
                   required
+                  disabled
                   fullWidth
                 >
-                  {deviceHolderList.map((option) => (
-                    <MenuItem key={option.deviceHolderName} value={option.deviceHolderName}>
-                      {option.deviceHolderName}
-                    </MenuItem>
-                  ))}
+                 
                 </TextField>
-              )}
 
               <DialogActions>
                 <Button onClick={this.props.onCloseDialog} color="primary">
                   Cancel
                 </Button>
                 <Button
-                  onClick={this.props.onCloseDialog}
                   variant="contained"
                   type="submit"
                   color="primary"

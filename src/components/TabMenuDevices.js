@@ -24,19 +24,22 @@ const TabPanel = (props) => {
   );
 };
 
-class TabMenu extends Component {
+class TabMenuDevices extends Component {
   constructor(props) {
     super(props);
     this.state = {
       value: 0,
       deviceList: [],
+      deviceHolder: "",
     };
   }
 
-  getDiviceList = () => {
-    callApi("device", "GET", null)
+  getDiviceList = (deviceHolder) => {
+    console.log("device: ", deviceHolder);
+    callApi(`device/${deviceHolder}`, "GET", null)
       .then((res) => {
         if (res.status === 200) {
+          console.log("asssss");
           this.setState({
             deviceList: res.data,
           });
@@ -45,21 +48,23 @@ class TabMenu extends Component {
       .catch((error) => {
         notification.error({
           message: "Error ",
-          description: error.message,
+          description: "aaaa " + error.message,
         });
       });
   };
 
   componentDidMount() {
     //send request get all devices
-    this.getDiviceList();
+    this.setState({deviceHolder: this.props.param});
+    this.getDiviceList(this.props.param);
   }
 
   componentDidUpdate(prevProps, prevState) {
     if (this.props.needRefreshTabMenu) {
-      this.getDiviceList();
+      this.getDiviceList(this.props.param);
       this.props.setNeedRefreshTabMenuState(false);
     }
+
   }
 
   handleChange = (event, newValue) => {
@@ -67,7 +72,8 @@ class TabMenu extends Component {
   };
 
   render() {
-    let { deviceList } = this.state;
+    let { deviceList } = this.state; 
+    const {param} = this.props;
     return (
       <div className="row">
         <AppBar position="static" elevation={0}>
@@ -97,9 +103,11 @@ class TabMenu extends Component {
             />
           </Tabs>
         </AppBar>
-        <TabPanel value={this.state.value} index={0}>
-          <DeviceList deviceList={deviceList} />
-        </TabPanel>
+        {param && (
+            <TabPanel value={this.state.value} index={0}>
+            <DeviceList param={param} deviceList={deviceList} />
+          </TabPanel>
+        )} 
         <TabPanel value={this.state.value} index={1}></TabPanel>
         <TabPanel value={this.state.value} index={2}></TabPanel>
       </div>
@@ -107,4 +115,4 @@ class TabMenu extends Component {
   }
 }
 
-export default TabMenu;
+export default TabMenuDevices;
