@@ -6,6 +6,7 @@ import DeviceList from "./DeviceList.js";
 import callApi from "../util/ApiCaller.js";
 import { notification } from "antd";
 import "antd/dist/antd.css";
+import LoadingSpinerComponent from "./common/loading/loading.js";
 
 const a11yProps = (index, disable) => {
   return {
@@ -31,17 +32,19 @@ class TabMenuDevices extends Component {
       value: 0,
       deviceList: [],
       deviceHolder: "",
+      total:0,
+      page:1,
+      limit: 8,
     };
   }
 
-  getDiviceList = (deviceHolder) => {
-    console.log("device: ", deviceHolder);
-    callApi(`device/${deviceHolder}`, "GET", null)
+  getDiviceList = (deviceHolder, page, limit) => {
+    callApi(`device/${deviceHolder}?page=${page}&limit=${limit}`, "GET", null)
       .then((res) => {
         if (res.status === 200) {
-          console.log("asssss");
           this.setState({
-            deviceList: res.data,
+            deviceList: res.data.deviceVOS,
+            total: res.data.total,
           });
         }
       })
@@ -55,16 +58,25 @@ class TabMenuDevices extends Component {
 
   componentDidMount() {
     //send request get all devices
-    this.setState({deviceHolder: this.props.param});
-    this.getDiviceList(this.props.param);
+    this.setState({ deviceHolder: this.props.param });
+    let {page, limit} = this.state;
+    this.getDiviceList(this.props.param, page, limit);
   }
 
   componentDidUpdate(prevProps, prevState) {
     if (this.props.needRefreshTabMenu) {
-      this.getDiviceList(this.props.param);
+      let {page, limit} = this.state;
+      this.getDiviceList(this.props.param, page, limit);
       this.props.setNeedRefreshTabMenuState(false);
     }
+  }
 
+  changePage = (page, limit) => {
+    this.setState({
+      page: page,
+      limit: limit,
+    });
+    this.getDiviceList(this.props.param, page, limit);
   }
 
   handleChange = (event, newValue) => {
@@ -72,8 +84,8 @@ class TabMenuDevices extends Component {
   };
 
   render() {
-    let { deviceList } = this.state; 
-    const {param} = this.props;
+    let { deviceList, total } = this.state;
+    const { param } = this.props;
     return (
       <div className="row">
         <AppBar position="static" elevation={0}>
@@ -104,10 +116,11 @@ class TabMenuDevices extends Component {
           </Tabs>
         </AppBar>
         {param && (
-            <TabPanel value={this.state.value} index={0}>
-            <DeviceList param={param} deviceList={deviceList} />
+          <TabPanel value={this.state.value} index={0}>
+            <LoadingSpinerComponent />
+            <DeviceList changePage={this.changePage} param={param} deviceList={deviceList} total={total} />
           </TabPanel>
-        )} 
+        )}
         <TabPanel value={this.state.value} index={1}></TabPanel>
         <TabPanel value={this.state.value} index={2}></TabPanel>
       </div>

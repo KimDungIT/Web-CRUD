@@ -15,13 +15,13 @@ class DialogDelete extends Component {
     e.preventDefault();
     this.props.handleCloseDelete();
     const { history, param, title, name, deviceHolder} = this.props;
-    if(title === "devices list") {
+    if(title === "devices") {
       this.deleteDevices(param, history);
     }
     if(title === "device") {
       this.deleteDeviceItem(name, history, deviceHolder)
     }
-    if(title === "device holders list") {
+    if(title === "device holders") {
       this.deleteDeviceHolders();
     }
     
@@ -99,7 +99,7 @@ class DialogDelete extends Component {
             <DialogTitle id="form-dialog-title">Delete {this.props.title}</DialogTitle>
             <DialogContent>
               <form onSubmit={this.handleSubmit} noValidate autoComplete="off">
-          <Typography variant="comment" gutterBottom>Are you sure you want to delete this {this.props.title}?</Typography>
+          <Typography variant="body2" gutterBottom>Are you sure you want to delete this {this.props.title}?</Typography>
                 <DialogActions>
                   <Button onClick={this.props.handleCloseDelete} color="primary">
                     No

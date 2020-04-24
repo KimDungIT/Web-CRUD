@@ -16,7 +16,7 @@ class DeviceItem extends Component {
         {deviceItem && (
           <Link to={`/${deviceItem.deviceHolderName}/devices/${deviceItem.name}`}>
             <Card variant="outlined" className="cardRoot">
-              <CardMedia className="cardCover" image={cloud} title="cloud" />
+              <CardMedia className="cardCover" image={cloud} title="device" />
               <div className="cardDetail">
                 <CardContent className="cardText">
                   <Tooltip title={deviceItem.name}>

@@ -18,7 +18,7 @@ class DeviceHolderItem extends Component {
               <CardMedia
                 className="cardCover"
                 image={connection}
-                title="device holders"
+                title="device holder"
               />
               <div className="cardDetail">
                 <CardContent className="cardText">

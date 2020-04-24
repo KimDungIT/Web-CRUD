@@ -117,16 +117,16 @@ class DialogEdit extends Component {
       hardwareType,
       interfaceVersion,
       connectionMechanism,
-      deviceHolderName
+      deviceHolderName,
     } = this.state.deviceInfo;
     const deviceInfo = {
       name,
       hardwareType,
       interfaceVersion,
       connectionMechanism,
-      deviceHolderName
+      deviceHolderName,
     };
-    console.log("connectionMechanism: ", deviceInfo)
+    console.log("connectionMechanism: ", deviceInfo);
     if (this.validateInput(deviceInfo)) {
       notification.error({
         message: "Error ",
@@ -197,11 +197,7 @@ class DialogEdit extends Component {
                 <Button onClick={this.props.onCloseDialog} color="primary">
                   Cancel
                 </Button>
-                <Button
-                  variant="contained"
-                  type="submit"
-                  color="primary"
-                >
+                <Button variant="contained" type="submit" color="primary">
                   Save
                 </Button>
               </DialogActions>

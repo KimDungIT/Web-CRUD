@@ -58,7 +58,7 @@ class PathDevices extends Component {
           icon: <DeleteIcon />,
           disable: false,
           onClick: this.onClickDeleteButton,
-          title: "Delete device",
+          title: "Delete all devices",
         },
         {
           id: 3,
@@ -103,9 +103,8 @@ class PathDevices extends Component {
             >
                {this.pathList.map((element, index) =>
                 length === index + 1 ? (
-                  <Tooltip title={element.name}>
+                  <Tooltip key={index} title={element.name}>
                     <Typography
-                      key={index}
                       color={element.color}
                       className={element.className}
                     >
@@ -113,9 +112,8 @@ class PathDevices extends Component {
                     </Typography>
                   </Tooltip>
                 ) : (
-                  <Tooltip title={element.name}>
+                  <Tooltip key={index} title={element.name}>
                     <Link
-                      key={index}
                       color={element.color}
                       to={element.to}
                       onClick={element.onClick}
@@ -147,7 +145,7 @@ class PathDevices extends Component {
             />
 
             <DialogDelete
-              title="devices list"
+              title="devices"
               param={this.props.param}
               history={this.props.history}
               deviceHolder={this.props.param}

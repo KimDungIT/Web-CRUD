@@ -25,7 +25,7 @@ class PathDeviceHolder extends Component {
   };
 
   onClickReloadButton = () => {
-    console.log("perform click reload buton");
+    
     this.props.setNeedRefreshDeviceHolderState(true);
   };
 
@@ -57,7 +57,7 @@ class PathDeviceHolder extends Component {
           icon: <DeleteIcon />,
           disable: false,
           onClick: this.onClickDeleteButton,
-          title: "Delete device holder",
+          title: "Delete all device holders",
         },
         {
           id: 3,
@@ -108,7 +108,7 @@ class PathDeviceHolder extends Component {
               setNeedRefreshDeviceHolderState={this.props.setNeedRefreshDeviceHolderState}
             />
             <DialogDelete
-          title="device holders list"
+          title="device holders"
           openDialog={this.state.openDelete}
           handleCloseDelete={this.handleCloseDelete}
           setNeedRefreshDeviceHolderState={this.props.setNeedRefreshDeviceHolderState}

@@ -45,7 +45,7 @@ class DeviceDetail extends Component {
                   <CardMedia
                     className="mx-auto my-auto imageCloud"
                     image={cloud}
-                    title="cloud"
+                    title="device detail"
                   />
                 </div>
                 <div className="col-lg-9 col-md-9 col-sm-9">

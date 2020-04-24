@@ -6,7 +6,6 @@ import DeviceHolderPage from "./pages/DeviceHolderPage.js";
 import NotFoundPage from "./pages/NotFoundPage.js";
 import { notification } from "antd"
 import {
-  Redirect,
   Switch,
   Route,
   BrowserRouter as Router,

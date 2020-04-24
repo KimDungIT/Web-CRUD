@@ -6,6 +6,7 @@ import DeviceHolderList from "./DeviceHolderList.js";
 import callApi from "../util/ApiCaller.js";
 import { notification } from "antd";
 import "antd/dist/antd.css";
+import LoadingSpinerComponent from "./common/loading/loading.js";
 
 const a11yProps = (index, disable) => {
   return {
@@ -30,16 +31,20 @@ class TabMenuDeviceHolder extends Component {
     this.state = {
       value: 0,
       deviceHolderList: [],
+      total:0,
+      page:1,
+      limit: 8,
     };
   }
 
-  getDiviceHolderList = () => {
-    callApi("device-holder", "GET", null)
+  getDiviceHolderList = (page, limit) => {
+    callApi(`device-holder?page=${page}&limit=${limit}`, "GET", null)
       .then((res) => {
         if (res.status === 200) {
-          console.log("ddddd: ", res.data);
+          console.log("device holders: ", res.data);
           this.setState({
-            deviceHolderList: res.data,
+            deviceHolderList: res.data.deviceHolderVOS,
+            total: res.data.total,
           });
         }
       })
@@ -53,14 +58,24 @@ class TabMenuDeviceHolder extends Component {
 
   componentDidMount() {
     //send request get all device holder
-    this.getDiviceHolderList();
+    let {page, limit} = this.state;
+    this.getDiviceHolderList(page, limit);
   }
 
   componentDidUpdate(prevProps, prevState) {
     if (this.props.needRefreshDeviceHolder) {
-      this.getDiviceHolderList();
+      let {page, limit} = this.state;
+      this.getDiviceHolderList(page, limit);
       this.props.setNeedRefreshDeviceHolderState(false);
     }
+  }
+
+  changePage = (page, limit) => {
+    this.setState({
+      page: page,
+      limit: limit,
+    });
+    this.getDiviceHolderList(page, limit);
   }
 
   handleChange = (event, newValue) => {
@@ -69,7 +84,8 @@ class TabMenuDeviceHolder extends Component {
 
   render() {
     let { deviceHolderList } = this.state;
-    console.log("device holder list: ", deviceHolderList);
+    let {total} = this.state;
+    console.log("total: ", total);
     return (
       <div className="row">
         <AppBar position="static" elevation={0}>
@@ -100,7 +116,8 @@ class TabMenuDeviceHolder extends Component {
           </Tabs>
         </AppBar>
         <TabPanel value={this.state.value} index={0}>
-          <DeviceHolderList deviceHolderList={deviceHolderList} />
+          <LoadingSpinerComponent />
+          <DeviceHolderList changePage={this.changePage} deviceHolderList={deviceHolderList} total = {total} />
         </TabPanel>
         <TabPanel value={this.state.value} index={1}></TabPanel>
         <TabPanel value={this.state.value} index={2}></TabPanel>
