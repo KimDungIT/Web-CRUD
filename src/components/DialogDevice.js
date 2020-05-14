@@ -47,13 +47,14 @@ class DialogDevice extends Component {
       interfaceVersion &&
       connectionMechanism &&
       deviceHolderName;
-    if (!checkInsert) {
-      notification.error({
-        message: "Error ",
-        description: "Can not insert device",
-      });
-      return;
-    }
+      if (!checkInsert) {
+        notification.error({
+          message: "Error",
+          description: "Mandatory attributes (hwType, version or connectionMechanism) are missing",
+        });
+        return;
+      }
+    
     callApi("device", "POST", deviceInfo)
       .then((res) => {
         if (res.status === 200) {
@@ -62,19 +63,28 @@ class DialogDevice extends Component {
             description: "Add device successfully!",
           });
           this.props.setNeedRefreshTabMenuState(true);
-          this.setState({
-            name: "",
-            hardwareType: "",
-            interfaceVersion: "",
-            connectionMechanism: "",
-          });
+          this.setState({ deviceInfo: {}});
         }
       })
       .catch((error) => {
-        notification.error({
-          message: "Error ",
-          description: error.message,
-        });
+        if(error.response.data) {
+          notification.error({
+            message: error.response.data.status,
+            description: error.response.data.message,
+          });
+        } else {
+          if(error.response.data) {
+            notification.error({
+              message: "Error",
+              description: error.response.data.message,
+            })
+          } else {
+            notification.error({
+              message: "Error",
+              description: error.message,
+            })
+          }
+        }
       });
   };
 

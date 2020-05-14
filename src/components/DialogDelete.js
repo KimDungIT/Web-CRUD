@@ -15,27 +15,26 @@ class DialogDelete extends Component {
     e.preventDefault();
     this.props.handleCloseDelete();
     const { history, param, title, name, deviceHolder} = this.props;
-    if(title === "devices") {
-      this.deleteDevices(param, history);
+    if(title === "device holder") {
+      this.deleteDeviceHolder(param, history);
     }
     if(title === "device") {
       this.deleteDeviceItem(name, history, deviceHolder)
     }
     if(title === "device holders") {
-      this.deleteDeviceHolders();
+      this.deleteAllDeviceHolders();
     }
     
   };
 
-  deleteDevices = (param, history) => {
-    callApi(`device?deviceHolderName=${param}`, "DELETE", null)
+  deleteDeviceHolder = (param, history) => {
+    callApi(`device-holder/${param}`, "DELETE", null)
       .then((res) => {
         if (res.status === 200) {
           notification.success({
             message: "Success",
-            description: "Delete devices successfully!",
+            description: "Delete device holder successfully!",
           });
-          this.props.setNeedRefreshTabMenuState(true);
           history.push("/");
         }
       })
@@ -55,7 +54,7 @@ class DialogDelete extends Component {
             message: "Success",
             description: "Delete device successfully!",
           });
-          this.props.setNeedRefreshDevice(true);
+          // this.props.setNeedRefreshDevice(true);
           history.push(`/${deviceHolder}/devices`);
         }
       })
@@ -67,7 +66,7 @@ class DialogDelete extends Component {
       });
   }
 
-  deleteDeviceHolders = () => {
+  deleteAllDeviceHolders = () => {
     callApi("device-holder", "DELETE", null)
       .then((res) => {
         if (res.status === 200) {

@@ -14,21 +14,21 @@ class DialogDeviceHolder extends Component {
     super(props);
     this.state = {
       open: false,
-      deviceHolderName: ""
+      deviceHolderName: "",
     };
   }
 
   handleSubmit = (e) => {
     e.preventDefault();
-    let {deviceHolderName} = this.state;
+    let { deviceHolderName } = this.state;
     if (deviceHolderName === "") {
       notification.error({
         message: "Error ",
-        description: "Can not insert device holder",
+        description: "Mandatory attribute (name) is missing",
       });
       return;
     }
-    let deviceHolderObj = {deviceHolderName};
+    let deviceHolderObj = { deviceHolderName };
     callApi("device-holder", "POST", deviceHolderObj)
       .then((res) => {
         if (res.status === 200) {
@@ -37,20 +37,26 @@ class DialogDeviceHolder extends Component {
             description: "Add device holder successfully!",
           });
           this.props.setNeedRefreshDeviceHolderState(true);
-          this.setState({deviceHolderName: ""});
+          this.setState({ deviceHolderName: "" });
         }
       })
       .catch((error) => {
-        notification.error({
-          message: "Error ",
-          description: error.message,
-        });
+        if(error.response.data) {
+          notification.error({
+            message: error.response.data.status,
+            description: error.response.data.message,
+          })
+        } else {
+          notification.error({
+            message: "Error",
+            description: error.message,
+          })
+        }
       });
   };
 
   onChangeDiviceHolder = (event) => {
-    this.setState({deviceHolderName: event.target.value});
-    
+    this.setState({ deviceHolderName: event.target.value });
   };
 
   render() {

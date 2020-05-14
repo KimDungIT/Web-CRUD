@@ -24,7 +24,7 @@ class DevicesPage extends Component {
         <div className="row" id="tool">
           <PathDevices 
           history={history}
-          param={param} 
+          param={param}
           setNeedRefreshTabMenuState={this.setNeedRefreshTabMenuState} />
         </div>
         <TabMenuDevices

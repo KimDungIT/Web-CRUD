@@ -16,11 +16,16 @@ class DialogEdit extends Component {
     super(props);
     this.state = {
       deviceInfo: {},
+      deviceInfoBackup: {},
     };
   }
 
   componentDidMount() {
-    this.setState({ deviceInfo: this.props.deviceInfo });
+    this.setState({ 
+      deviceInfo: this.props.deviceInfo,
+      deviceInfoBackup: this.props.deviceInfo,
+     });
+
   }
 
   changeName = () => {
@@ -47,7 +52,10 @@ class DialogEdit extends Component {
       JSON.stringify(this.props.deviceInfo) !==
       JSON.stringify(prevProps.deviceInfo)
     ) {
-      this.setState({ deviceInfo: this.props.deviceInfo });
+      this.setState({ 
+        deviceInfo: this.props.deviceInfo,
+        deviceInfoBackup: this.props.deviceInfo,
+       });
     }
   }
 
@@ -126,8 +134,9 @@ class DialogEdit extends Component {
       connectionMechanism,
       deviceHolderName,
     };
-    console.log("connectionMechanism: ", deviceInfo);
+    console.log("deviceInfo: ", deviceInfo);
     if (this.validateInput(deviceInfo)) {
+      this.resetDivice();
       notification.error({
         message: "Error ",
         description: "Can not edit device",
@@ -179,6 +188,18 @@ class DialogEdit extends Component {
     }));
   };
 
+  resetDivice = () => {
+    this.setState({
+      deviceInfo: this.state.deviceInfoBackup,
+    }, () => console.log(this.state))
+  }
+
+  handleCancel = () => {
+    this.props.onCloseDialog();
+    this.resetDivice();
+  }
+
+
   render() {
     const renderField = this.renderField();
     const name = this.changeName();
@@ -194,7 +215,7 @@ class DialogEdit extends Component {
             <form onSubmit={this.handleSubmit} noValidate autoComplete="off">
               {renderField}
               <DialogActions>
-                <Button onClick={this.props.onCloseDialog} color="primary">
+                <Button onClick={this.handleCancel} color="primary">
                   Cancel
                 </Button>
                 <Button variant="contained" type="submit" color="primary">

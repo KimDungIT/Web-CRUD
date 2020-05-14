@@ -5,12 +5,16 @@ import NavigateNextIcon from "@material-ui/icons/NavigateNext";
 import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
 import DeleteIcon from "@material-ui/icons/Delete";
 import ReplayIcon from "@material-ui/icons/Replay";
+import MessageIcon from '@material-ui/icons/Message';
 import IconButtonCommon from "./common/button/IconButton";
 import "../common.css";
 import DialogDevice from "./DialogDevice.js";
 import DialogDelete from "./DialogDelete.js";
 import Tooltip from "@material-ui/core/Tooltip";
 import { Link } from "react-router-dom";
+import callApi from "../util/ApiCaller.js";
+import { notification } from "antd";
+import "antd/dist/antd.css";
 
 class PathDevices extends Component {
   constructor(props) {
@@ -42,26 +46,51 @@ class PathDevices extends Component {
     this.setState({ openDelete: false });
   };
 
+  handleClickMessageButton = () => {
+    callApi('device/status', "GET", null)
+    .then((res) => {
+      if (res.status === 200) {
+        notification.success({
+          message: "Success",
+          description: "Send message successfully!",
+        });
+      }
+    })
+    .catch((error) => {
+      notification.error({
+        message: "Error ",
+        description: error.message,
+      });
+    });
+  };
+
   pathIconButton = [
     {
       pathName: "Breadcrumb",
       iconButtons: [
         {
           id: 1,
+          icon: <MessageIcon />,
+          disable: false,
+          onClick: this.handleClickMessageButton,
+          title: " Status device",
+        },
+        {
+          id: 2,
           icon: <AddCircleOutlineIcon />,
           disable: false,
           onClick: this.handleClickOpen,
           title: "Create device",
         },
         {
-          id: 2,
+          id: 3,
           icon: <DeleteIcon />,
           disable: false,
           onClick: this.onClickDeleteButton,
-          title: "Delete all devices",
+          title: "Delete device holder",
         },
         {
-          id: 3,
+          id: 4,
           icon: <ReplayIcon />,
           disable: false,
           onClick: this.onClickReloadButton,
@@ -145,7 +174,7 @@ class PathDevices extends Component {
             />
 
             <DialogDelete
-              title="devices"
+              title="device holder"
               param={this.props.param}
               history={this.props.history}
               deviceHolder={this.props.param}

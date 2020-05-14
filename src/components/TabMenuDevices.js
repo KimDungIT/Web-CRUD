@@ -51,7 +51,7 @@ class TabMenuDevices extends Component {
       .catch((error) => {
         notification.error({
           message: "Error ",
-          description: "aaaa " + error.message,
+          description: error.message,
         });
       });
   };
